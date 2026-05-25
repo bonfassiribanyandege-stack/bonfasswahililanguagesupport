@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en" class="h-full w-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bonfas AI Language Hub</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+
+    body {
+      font-family: Manrope, sans-serif;
+    }
+
+    .grain {
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(45, 212, 191, 0.22), transparent 28%),
+        radial-gradient(circle at 85% 10%, rgba(34, 197, 94, 0.20), transparent 30%),
+        radial-gradient(circle at 50% 90%, rgba(250, 204, 21, 0.14), transparent 34%),
+        linear-gradient(135deg, #06140f 0%, #0a1f18 45%, #050505 100%);
+    }
+
+    .light-mode .grain {
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(20, 184, 166, 0.20), transparent 28%),
+        radial-gradient(circle at 85% 10%, rgba(34, 197, 94, 0.16), transparent 30%),
+        radial-gradient(circle at 50% 90%, rgba(250, 204, 21, 0.16), transparent 34%),
+        linear-gradient(135deg, #f4fff8 0%, #ecfdf5 45%, #ffffff 100%);
+    }
+
+    .pattern {
+      background-image:
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+
+    .light-mode .pattern {
+      background-image:
+        linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px);
+    }
+
+    .font-display {
+      font-family: Fraunces, serif;
+    }
+
+    .reveal {
+      animation: rise 700ms ease both;
+    }
+
+    .reveal-delay-1 {
+      animation-delay: 120ms;
+    }
+
+    .reveal-delay-2 {
+      animation-delay: 240ms;
+    }
+
+    .reveal-delay-3 {
+      animation-delay: 360ms;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .glass {
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .focus-ring:focus-visible {
+      outline: 3px solid #facc15;
+      outline-offset: 4px;
+    }
+
+    .smooth-scroll {
+      scroll-behavior: smooth;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full w-full">
+  <div id="app" class="h-full w-full overflow-auto smooth-scroll grain text-white transition-colors duration-300"><!-- Admin Dashboard Toggle -->
+   <div class="fixed bottom-6 right-6 z-40"><button id="adminToggle" class="focus-ring inline-flex items-center gap-2 rounded-full bg-emerald-400 px-5 py-3 font-extrabold text-black shadow-xl shadow-emerald-500/20 hover:bg-emerald-300 transition" aria-label="Toggle admin dashboard"> <i data-lucide="lock" aria-hidden="true"></i> <span class="hidden sm:inline">Admin</span> </button>
+   </div><!-- Admin Dashboard Modal -->
+   <div id="adminModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+    <div class="max-h-[90vh] w-full max-w-4xl overflow-auto rounded-[2rem] border border-emerald-300/40 bg-black shadow-2xl"><!-- Admin Header -->
+     <div class="sticky top-0 border-b border-white/10 bg-black/90 px-8 py-6 flex items-center justify-between">
+      <h2 class="font-display text-2xl font-bold text-white">Project Dashboard</h2><button id="closeAdmin" class="focus-ring rounded-full p-2 hover:bg-white/10" aria-label="Close dashboard"> <i data-lucide="x" aria-hidden="true"></i> </button>
+     </div><!-- Admin Content -->
+     <div class="p-8"><!-- Add Project Form -->
+      <div class="mb-10 rounded-2xl border border-white/10 bg-white/8 p-6">
+       <h3 class="font-display text-xl font-bold mb-6">Add New Project</h3>
+       <form id="projectForm" class="grid gap-4 md:grid-cols-2">
+        <div><label for="clientName" class="block text-sm font-bold text-white/80 mb-2">Client Name</label> <input id="clientName" type="text" placeholder="Client name" class="w-full rounded-lg bg-white/10 px-4 py-3 text-white placeholder-white/50 border border-white/20 focus:border-emerald-300 focus:outline-none">
+        </div>
+        <div><label for="projectType" class="block text-sm font-bold text-white/80 mb-2">Project Type</label> <select id="projectType" class="w-full rounded-lg bg-white/10 px-4 py-3 text-white border border-white/20 focus:border-emerald-300 focus:outline-none"> <option value="">Select type...</option> <option value="Transcription">Transcription</option> <option value="Translation">Translation</option> <option value="AI Data Labeling">AI Data Labeling</option> <option value="Content Moderation">Content Moderation</option> <option value="Team Outsourcing">Team Outsourcing</option> <option value="Other">Other</option> </select>
+        </div>
+        <div><label for="status" class="block text-sm font-bold text-white/80 mb-2">Status</label> <select id="status" class="w-full rounded-lg bg-white/10 px-4 py-3 text-white border border-white/20 focus:border-emerald-300 focus:outline-none"> <option value="Active">Active</option> <option value="Pending">Pending</option> <option value="Completed">Completed</option> <option value="On Hold">On Hold</option> </select>
+        </div>
+        <div><label for="deadline" class="block text-sm font-bold text-white/80 mb-2">Deadline</label> <input id="deadline" type="date" class="w-full rounded-lg bg-white/10 px-4 py-3 text-white border border-white/20 focus:border-emerald-300 focus:outline-none">
+        </div>
+        <div class="md:col-span-2"><label for="notes" class="block text-sm font-bold text-white/80 mb-2">Notes</label> <textarea id="notes" placeholder="Project details..." rows="3" class="w-full rounded-lg bg-white/10 px-4 py-3 text-white placeholder-white/50 border border-white/20 focus:border-emerald-300 focus:outline-none"></textarea>
+        </div><button type="submit" id="submitBtn" class="focus-ring md:col-span-2 rounded-lg bg-emerald-400 px-6 py-3 font-bold text-black hover:bg-emerald-300 transition disabled:opacity-50"> <i data-lucide="plus" aria-hidden="true" class="inline mr-2"></i>Add Project </button>
+       </form>
+      </div><!-- Projects List -->
+      <div>
+       <div class="flex items-center justify-between mb-6">
+        <h3 class="font-display text-xl font-bold">Your Projects</h3><span id="projectCount" class="text-sm font-bold text-emerald-300">0 projects</span>
+       </div>
+       <div id="projectsList" class="grid gap-4">
+        <p class="text-center text-white/60 py-8">No projects yet. Add one to get started!</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="pattern min-h-full w-full">
+    <header class="sticky top-0 z-50 border-b border-white/10 bg-black/50 glass">
+     <nav class="mx-auto flex w-full max-w-7xl items-center justify-between gap-5 px-5 py-4" aria-label="Main navigation">
+      <a href="#home" class="focus-ring flex items-center gap-3 rounded-xl" aria-label="Go to home section"> <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-400 text-black shadow-lg shadow-emerald-500/20"> <i data-lucide="languages" aria-hidden="true"></i> </span> <span id="brandName" class="font-display text-xl font-bold tracking-tight">Bonfas AI Language Hub</span> </a>
+      <div class="hidden items-center gap-6 md:flex">
+       <a class="focus-ring rounded-lg text-sm font700 text-white/80 transition hover:text-emerald-300" href="#services">Services</a> <a class="focus-ring rounded-lg text-sm font700 text-white/80 transition hover:text-emerald-300" href="#pricing">Pricing</a> <a class="focus-ring rounded-lg text-sm font700 text-white/80 transition hover:text-emerald-300" href="#portfolio">Portfolio</a> <a class="focus-ring rounded-lg text-sm font700 text-white/80 transition hover:text-emerald-300" href="#contact">Contact</a>
+      </div>
+      <div class="flex items-center gap-3">
+       <button id="themeToggle" class="focus-ring inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/20" type="button" aria-label="Toggle dark mode"> <i id="themeIcon" data-lucide="moon" aria-hidden="true"></i> <span id="themeText" class="hidden sm:inline">Dark Mode</span> </button> <button id="menuToggle" class="focus-ring inline-flex rounded-full bg-white/10 p-3 text-white md:hidden" type="button" aria-label="Open menu" aria-expanded="false"> <i data-lucide="menu" aria-hidden="true"></i> </button>
+      </div>
+     </nav>
+     <div id="mobileMenu" class="hidden border-t border-white/10 bg-black/70 px-5 py-4 md:hidden">
+      <div class="mx-auto grid max-w-7xl gap-3">
+       <a class="focus-ring rounded-xl px-3 py-3 font-bold text-white/85 hover:bg-white/10" href="#services">Services</a> <a class="focus-ring rounded-xl px-3 py-3 font-bold text-white/85 hover:bg-white/10" href="#pricing">Pricing</a> <a class="focus-ring rounded-xl px-3 py-3 font-bold text-white/85 hover:bg-white/10" href="#portfolio">Portfolio</a> <a class="focus-ring rounded-xl px-3 py-3 font-bold text-white/85 hover:bg-white/10" href="#contact">Contact</a>
+      </div>
+     </div>
+    </header>
+    <main>
+     <section id="home" class="mx-auto grid w-full max-w-7xl items-center gap-10 px-5 py-16 md:grid-cols-[1.15fr_.85fr] md:py-20">
+      <div class="reveal">
+       <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-300/10 px-4 py-2 text-sm font-bold text-emerald-200"><i data-lucide="sparkles" aria-hidden="true"></i> Swahili language support for AI teams</p>
+       <h1 id="heroTitle" class="font-display max-w-4xl text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">Bonfas Swahili AI Data &amp; Language Support Agency</h1>
+       <p id="heroSubtitle" class="mt-6 max-w-2xl text-lg leading-8 text-white/78">We help AI companies, research organizations, and global startups access reliable Swahili-speaking professionals for transcription, translation, annotation, and moderation.</p>
+       <div class="mt-8 flex flex-wrap gap-4">
+        <a id="primaryButton" href="https://wa.me/254745032628" target="_blank" rel="noopener noreferrer" class="focus-ring inline-flex items-center gap-3 rounded-2xl bg-emerald-400 px-6 py-4 font-extrabold text-black shadow-xl shadow-emerald-500/20 transition hover:-translate-y-1 hover:bg-emerald-300"> <span id="primaryButtonText">Hire Our Swahili Team</span> <i data-lucide="arrow-up-right" aria-hidden="true"></i> </a> <a href="#services" class="focus-ring inline-flex items-center gap-3 rounded-2xl border border-white/20 bg-white/8 px-6 py-4 font-extrabold text-white transition hover:-translate-y-1 hover:bg-white/14"> Explore Services <i data-lucide="chevron-down" aria-hidden="true"></i> </a>
+       </div>
+       <div class="mt-10 grid max-w-2xl grid-cols-3 gap-3">
+        <div class="rounded-3xl border border-white/10 bg-white/8 p-4">
+         <p class="font-display text-3xl font-bold text-emerald-300">24h</p>
+         <p class="mt-1 text-sm text-white/70">Fast project starts</p>
+        </div>
+        <div class="rounded-3xl border border-white/10 bg-white/8 p-4">
+         <p class="font-display text-3xl font-bold text-emerald-300">100%</p>
+         <p class="mt-1 text-sm text-white/70">Native Swahili review</p>
+        </div>
+        <div class="rounded-3xl border border-white/10 bg-white/8 p-4">
+         <p class="font-display text-3xl font-bold text-emerald-300">AI</p>
+         <p class="mt-1 text-sm text-white/70">Data-ready teams</p>
+        </div>
+       </div>
+      </div>
+      <aside class="reveal reveal-delay-1 rounded-[2rem] border border-white/12 bg-white/10 p-6 shadow-2xl glass" aria-labelledby="whyTitle">
+       <div class="rounded-[1.5rem] bg-black/35 p-6">
+        <h2 id="whyTitle" class="font-display text-3xl font-bold">Why Choose Us?</h2>
+        <p class="mt-3 text-white/70">A focused language operations partner for teams building with African language data.</p>
+        <ul class="mt-6 grid gap-4" aria-label="Benefits">
+         <li class="flex gap-3 rounded-2xl bg-white/8 p-4"><i class="mt-1 text-emerald-300" data-lucide="check-circle-2" aria-hidden="true"></i> <span>Native Swahili language specialists</span></li>
+         <li class="flex gap-3 rounded-2xl bg-white/8 p-4"><i class="mt-1 text-emerald-300" data-lucide="timer" aria-hidden="true"></i> <span>Fast turnaround for bulk projects</span></li>
+         <li class="flex gap-3 rounded-2xl bg-white/8 p-4"><i class="mt-1 text-emerald-300" data-lucide="users" aria-hidden="true"></i> <span>Affordable and scalable teams</span></li>
+         <li class="flex gap-3 rounded-2xl bg-white/8 p-4"><i class="mt-1 text-emerald-300" data-lucide="badge-check" aria-hidden="true"></i> <span>Quality assurance for every delivery</span></li>
+        </ul>
+       </div>
+      </aside>
+     </section>
+     <section id="services" class="mx-auto w-full max-w-7xl px-5 py-14">
+      <div class="reveal reveal-delay-2 mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+       <div>
+        <p class="font-bold uppercase tracking-[0.24em] text-emerald-300">What we do</p>
+        <h2 id="servicesTitle" class="font-display mt-3 text-4xl font-bold md:text-5xl">Our Services</h2>
+       </div>
+       <p class="max-w-xl text-white/70">Reliable language support for machine learning, research, content, and customer operations.</p>
+      </div>
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+       <article class="service-card rounded-[1.5rem] border border-white/10 bg-white/9 p-6 transition hover:-translate-y-1 hover:bg-white/14">
+        <i class="mb-5 text-emerald-300" data-lucide="file-audio" aria-hidden="true"></i>
+        <h3 class="font-display text-2xl font-bold">Swahili Transcription</h3>
+        <p class="mt-3 text-white/70">Accurate audio and video transcription for interviews, calls, podcasts, and datasets.</p>
+       </article>
+       <article class="service-card rounded-[1.5rem] border border-white/10 bg-white/9 p-6 transition hover:-translate-y-1 hover:bg-white/14">
+        <i class="mb-5 text-emerald-300" data-lucide="tags" aria-hidden="true"></i>
+        <h3 class="font-display text-2xl font-bold">AI Data Labeling</h3>
+        <p class="mt-3 text-white/70">High-quality annotation and categorization for machine learning projects.</p>
+       </article>
+       <article class="service-card rounded-[1.5rem] border border-white/10 bg-white/9 p-6 transition hover:-translate-y-1 hover:bg-white/14">
+        <i class="mb-5 text-emerald-300" data-lucide="languages" aria-hidden="true"></i>
+        <h3 class="font-display text-2xl font-bold">Translation Services</h3>
+        <p class="mt-3 text-white/70">English ↔ Swahili translation by native speakers with context-aware editing.</p>
+       </article>
+       <article class="service-card rounded-[1.5rem] border border-white/10 bg-white/9 p-6 transition hover:-translate-y-1 hover:bg-white/14">
+        <i class="mb-5 text-emerald-300" data-lucide="shield-check" aria-hidden="true"></i>
+        <h3 class="font-display text-2xl font-bold">Content Moderation</h3>
+        <p class="mt-3 text-white/70">Human review for digital platforms, communities, and user-generated content.</p>
+       </article>
+       <article class="service-card rounded-[1.5rem] border border-white/10 bg-white/9 p-6 transition hover:-translate-y-1 hover:bg-white/14">
+        <i class="mb-5 text-emerald-300" data-lucide="book-open-check" aria-hidden="true"></i>
+        <h3 class="font-display text-2xl font-bold">Educational Content</h3>
+        <p class="mt-3 text-white/70">Curriculum, quizzes, academic reviews, and Swahili learning support.</p>
+       </article>
+       <article class="service-card rounded-[1.5rem] border border-white/10 bg-white/9 p-6 transition hover:-translate-y-1 hover:bg-white/14">
+        <i class="mb-5 text-emerald-300" data-lucide="network" aria-hidden="true"></i>
+        <h3 class="font-display text-2xl font-bold">Team Outsourcing</h3>
+        <p class="mt-3 text-white/70">Scalable Swahili teams for large projects, ongoing workflows, and QA pipelines.</p>
+       </article>
+      </div>
+     </section>
+     <section id="pricing" class="mx-auto w-full max-w-7xl px-5 py-14">
+      <div class="mb-10 text-center">
+       <p class="font-bold uppercase tracking-[0.24em] text-emerald-300">Flexible rates</p>
+       <h2 id="pricingTitle" class="font-display mt-3 text-4xl font-bold md:text-5xl">Simple Pricing</h2>
+       <p class="mx-auto mt-4 max-w-2xl text-white/70">Choose a starting option, then contact us for a tailored quote based on volume and deadline.</p>
+      </div>
+      <div class="grid gap-5 md:grid-cols-3">
+       <article class="rounded-[1.5rem] border border-white/10 bg-white/9 p-6">
+        <p class="font-bold text-emerald-300">Starter</p>
+        <h3 class="font-display mt-3 text-3xl font-bold">Small Tasks</h3>
+        <p class="mt-3 text-white/70">Best for short files, pilot datasets, and sample reviews.</p>
+        <p class="font-display mt-6 text-4xl font-bold">Custom</p><a href="https://wa.me/254745032628" target="_blank" rel="noopener noreferrer" class="focus-ring mt-6 inline-flex w-full justify-center rounded-2xl border border-white/20 px-5 py-3 font-extrabold text-white hover:bg-white/10">Request Quote</a>
+       </article>
+       <article class="relative rounded-[1.5rem] border border-emerald-300/40 bg-emerald-400 p-6 text-black shadow-2xl shadow-emerald-500/20">
+        <p class="absolute right-5 top-5 rounded-full bg-black px-3 py-1 text-xs font-extrabold text-emerald-300">POPULAR</p>
+        <p class="font-bold">Growth</p>
+        <h3 class="font-display mt-3 text-3xl font-bold">Ongoing Projects</h3>
+        <p class="mt-3 text-black/70">Best for AI companies needing consistent Swahili data support.</p>
+        <p class="font-display mt-6 text-4xl font-bold">Custom</p><a href="https://wa.me/254745032628" target="_blank" rel="noopener noreferrer" class="focus-ring mt-6 inline-flex w-full justify-center rounded-2xl bg-black px-5 py-3 font-extrabold text-white hover:bg-zinc-900">Start on WhatsApp</a>
+       </article>
+       <article class="rounded-[1.5rem] border border-white/10 bg-white/9 p-6">
+        <p class="font-bold text-emerald-300">Enterprise</p>
+        <h3 class="font-display mt-3 text-3xl font-bold">Bulk Teams</h3>
+        <p class="mt-3 text-white/70">Best for high-volume annotation, moderation, and QA workflows.</p>
+        <p class="font-display mt-6 text-4xl font-bold">Custom</p><a href="mailto:hello@example.com" class="focus-ring mt-6 inline-flex w-full justify-center rounded-2xl border border-white/20 px-5 py-3 font-extrabold text-white hover:bg-white/10">Email Us</a>
+       </article>
+      </div>
+     </section>
+     <section id="portfolio" class="mx-auto w-full max-w-7xl px-5 py-14">
+      <div class="mb-10">
+       <p class="font-bold uppercase tracking-[0.24em] text-emerald-300">Use cases</p>
+       <h2 id="portfolioTitle" class="font-display mt-3 text-4xl font-bold md:text-5xl">Portfolio Highlights</h2>
+      </div>
+      <div class="grid gap-5 md:grid-cols-3">
+       <article class="rounded-[1.5rem] border border-white/10 bg-black/25 p-6">
+        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-emerald-300">
+         <i data-lucide="mic-2" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-display text-2xl font-bold">Speech Dataset Review</h3>
+        <p class="mt-3 text-white/70">Native review for Swahili audio quality, speaker clarity, and transcription consistency.</p>
+       </article>
+       <article class="rounded-[1.5rem] border border-white/10 bg-black/25 p-6">
+        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-emerald-300">
+         <i data-lucide="message-square-text" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-display text-2xl font-bold">Content Moderation</h3>
+        <p class="mt-3 text-white/70">Human judgment for platform safety, cultural context, and Swahili language nuance.</p>
+       </article>
+       <article class="rounded-[1.5rem] border border-white/10 bg-black/25 p-6">
+        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-emerald-300">
+         <i data-lucide="graduation-cap" aria-hidden="true"></i>
+        </div>
+        <h3 class="font-display text-2xl font-bold">Learning Material QA</h3>
+        <p class="mt-3 text-white/70">Language checks for educational apps, quizzes, lessons, and bilingual learning products.</p>
+       </article>
+      </div>
+     </section>
+     <section id="contact" class="mx-auto w-full max-w-7xl px-5 py-14 pb-20">
+      <div class="overflow-hidden rounded-[2rem] border border-white/10 bg-white/10 glass">
+       <div class="grid gap-0 md:grid-cols-[1fr_.8fr]">
+        <div class="p-8 md:p-10">
+         <p class="font-bold uppercase tracking-[0.24em] text-emerald-300">Contact</p>
+         <h2 id="contactTitle" class="font-display mt-3 text-4xl font-bold md:text-5xl">Ready to build your Swahili AI team?</h2>
+         <p id="contactSubtitle" class="mt-5 max-w-2xl text-lg leading-8 text-white/75">Reach us today for transcription, translation, data labeling, moderation, or outsourced Swahili language support.</p>
+         <div class="mt-8 flex flex-wrap gap-4">
+          <a href="https://wa.me/254745032628" target="_blank" rel="noopener noreferrer" class="focus-ring inline-flex items-center gap-3 rounded-2xl bg-emerald-400 px-6 py-4 font-extrabold text-black shadow-xl shadow-emerald-500/20 hover:bg-emerald-300"> <i data-lucide="message-circle" aria-hidden="true"></i> Chat on WhatsApp </a> <a href="mailto:hello@example.com" class="focus-ring inline-flex items-center gap-3 rounded-2xl border border-white/20 px-6 py-4 font-extrabold text-white hover:bg-white/10"> <i data-lucide="mail" aria-hidden="true"></i> Send Email </a>
+         </div>
+        </div>
+        <aside class="border-t border-white/10 bg-black/25 p-8 md:border-l md:border-t-0 md:p-10" aria-labelledby="contactDetailsTitle">
+         <h3 id="contactDetailsTitle" class="font-display text-2xl font-bold">Project details to send</h3>
+         <ul class="mt-6 grid gap-4 text-white/75">
+          <li class="flex gap-3"><i class="text-emerald-300" data-lucide="check" aria-hidden="true"></i> Project type and language direction</li>
+          <li class="flex gap-3"><i class="text-emerald-300" data-lucide="check" aria-hidden="true"></i> Audio/video length or dataset size</li>
+          <li class="flex gap-3"><i class="text-emerald-300" data-lucide="check" aria-hidden="true"></i> Deadline and quality requirements</li>
+          <li class="flex gap-3"><i class="text-emerald-300" data-lucide="check" aria-hidden="true"></i> Preferred delivery format</li>
+         </ul>
+        </aside>
+       </div>
+      </div>
+     </section>
+    </main>
+    <footer class="border-t border-white/10 px-5 py-8">
+     <div class="mx-auto flex w-full max-w-7xl flex-col justify-between gap-4 text-white/65 md:flex-row md:items-center">
+      <p id="footerText">© 2026 Bonfas AI Language Hub</p>
+      <p>Swahili language support for AI, research, and global teams.</p>
+     </div>
+    </footer>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      brand_name: "Bonfas AI Language Hub",
+      hero_title: "Bonfas Swahili AI Data & Language Support Agency",
+      hero_subtitle: "We help AI companies, research organizations, and global startups access reliable Swahili-speaking professionals for transcription, translation, annotation, and moderation.",
+      primary_button_text: "Hire Our Swahili Team",
+      services_title: "Our Services",
+      pricing_title: "Simple Pricing",
+      portfolio_title: "Portfolio Highlights",
+      contact_title: "Ready to build your Swahili AI team?",
+      contact_subtitle: "Reach us today for transcription, translation, data labeling, moderation, or outsourced Swahili language support.",
+      footer_text: "© 2026 Bonfas AI Language Hub",
+      background_color: "#06140f",
+      surface_color: "#11251d",
+      text_color: "#ffffff",
+      primary_action_color: "#34d399",
+      secondary_action_color: "#facc15",
+      font_family: "Fraunces",
+      font_size: 16
+    };
+
+    const textIds = {
+      brand_name: "brandName",
+      hero_title: "heroTitle",
+      hero_subtitle: "heroSubtitle",
+      primary_button_text: "primaryButtonText",
+      services_title: "servicesTitle",
+      pricing_title: "pricingTitle",
+      portfolio_title: "portfolioTitle",
+      contact_title: "contactTitle",
+      contact_subtitle: "contactSubtitle",
+      footer_text: "footerText"
+    };
+
+    let isLightMode = false;
+
+    function applyThemeStyles(config) {
+      const app = document.getElementById("app");
+      const surfaceElements = document.querySelectorAll(".service-card, article, aside, footer, header");
+      const primaryButtons = document.querySelectorAll("#primaryButton, #contact a:first-child");
+      const secondaryElements = document.querySelectorAll(".text-emerald-300, .text-emerald-200");
+      const allText = document.querySelectorAll("body, a, button, p, h1, h2, h3, li, span");
+
+      const backgroundColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryActionColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryActionColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+
+      app.style.backgroundColor = backgroundColor;
+      app.style.color = textColor;
+
+      surfaceElements.forEach((element) => {
+        element.style.borderColor = isLightMode ? "rgba(6, 20, 15, 0.12)" : "rgba(255, 255, 255, 0.12)";
+      });
+
+      primaryButtons.forEach((button) => {
+        button.style.backgroundColor = primaryActionColor;
+        button.style.color = "#000000";
+      });
+
+      secondaryElements.forEach((element) => {
+        element.style.color = secondaryActionColor;
+      });
+
+      allText.forEach((element) => {
+        const customFont = config.font_family || defaultConfig.font_family;
+        element.style.fontFamily = `${customFont}, Manrope, sans-serif`;
+      });
+
+      const baseSize = Number(config.font_size || defaultConfig.font_size);
+      document.querySelectorAll("p, li, a, button, span").forEach((element) => {
+        element.style.fontSize = `${baseSize}px`;
+      });
+      document.querySelectorAll("h1").forEach((element) => {
+        element.style.fontSize = `clamp(${baseSize * 2}px, 6vw, ${baseSize * 4}px)`;
+      });
+      document.querySelectorAll("h2").forEach((element) => {
+        element.style.fontSize = `clamp(${baseSize * 1.7}px, 4vw, ${baseSize * 3.2}px)`;
+      });
+      document.querySelectorAll("h3").forEach((element) => {
+        element.style.fontSize = `${baseSize * 1.45}px`;
+      });
+
+      document.documentElement.style.setProperty("--surface-color", surfaceColor);
+    }
+
+    async function onConfigChange(config) {
+      Object.keys(textIds).forEach((key) => {
+        const element = document.getElementById(textIds[key]);
+        if (element) {
+          element.textContent = config[key] || defaultConfig[key];
+        }
+      });
+
+      applyThemeStyles(config);
+    }
+
+    function initializeElementSdk() {
+      if (!window.elementSdk) return;
+
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.surface_color || defaultConfig.surface_color,
+              set: (value) => {
+                config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.primary_action_color || defaultConfig.primary_action_color,
+              set: (value) => {
+                config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+              set: (value) => {
+                config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => {
+              config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (value) => {
+              config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["brand_name", config.brand_name || defaultConfig.brand_name],
+          ["hero_title", config.hero_title || defaultConfig.hero_title],
+          ["hero_subtitle", config.hero_subtitle || defaultConfig.hero_subtitle],
+          ["primary_button_text", config.primary_button_text || defaultConfig.primary_button_text],
+          ["services_title", config.services_title || defaultConfig.services_title],
+          ["pricing_title", config.pricing_title || defaultConfig.pricing_title],
+          ["portfolio_title", config.portfolio_title || defaultConfig.portfolio_title],
+          ["contact_title", config.contact_title || defaultConfig.contact_title],
+          ["contact_subtitle", config.contact_subtitle || defaultConfig.contact_subtitle],
+          ["footer_text", config.footer_text || defaultConfig.footer_text]
+        ])
+      });
+    }
+
+    function setLightMode(enabled) {
+      isLightMode = enabled;
+      const app = document.getElementById("app");
+      const themeText = document.getElementById("themeText");
+      const themeIcon = document.getElementById("themeIcon");
+
+      app.classList.toggle("light-mode", enabled);
+      app.classList.toggle("text-white", !enabled);
+      app.classList.toggle("text-zinc-950", enabled);
+
+      themeText.textContent = enabled ? "Light Mode" : "Dark Mode";
+      themeIcon.setAttribute("data-lucide", enabled ? "sun" : "moon");
+
+      document.querySelectorAll("header, #mobileMenu").forEach((element) => {
+        element.style.backgroundColor = enabled ? "rgba(255,255,255,0.78)" : "rgba(0,0,0,0.50)";
+      });
+
+      document.querySelectorAll("a, button, p, h1, h2, h3, li, span").forEach((element) => {
+        if (enabled && !element.closest("#primaryButton") && !element.closest(".bg-emerald-400")) {
+          element.classList.remove("text-white");
+        }
+      });
+
+      if (window.elementSdk) {
+        onConfigChange(window.elementSdk.config || defaultConfig);
+      } else {
+        onConfigChange(defaultConfig);
+      }
+
+      lucide.createIcons();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+
+      const themeToggle = document.getElementById("themeToggle");
+      const menuToggle = document.getElementById("menuToggle");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      themeToggle.addEventListener("click", () => {
+        setLightMode(!isLightMode);
+      });
+
+      menuToggle.addEventListener("click", () => {
+        const isOpen = !mobileMenu.classList.contains("hidden");
+        mobileMenu.classList.toggle("hidden", isOpen);
+        menuToggle.setAttribute("aria-expanded", String(!isOpen));
+      });
+
+      mobileMenu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.add("hidden");
+          menuToggle.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      document.querySelectorAll('a[href^="#"]').forEach((link) => {
+        link.addEventListener("click", (event) => {
+          const targetId = link.getAttribute("href");
+          const target = document.querySelector(targetId);
+          if (target) {
+            event.preventDefault();
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+
+      onConfigChange(defaultConfig);
+    });
+
+    initializeElementSdk();
+
+    // Admin Dashboard with Data SDK
+    let projects = [];
+
+    const dataHandler = {
+      onDataChanged(data) {
+        projects = data;
+        renderProjectsList();
+      }
+    };
+
+    async function initializeDataSDK() {
+      const result = await window.dataSdk.init(dataHandler);
+      if (!result.isOk) {
+        console.error("Failed to initialize Data SDK");
+      }
+    }
+
+    function renderProjectsList() {
+      const projectsList = document.getElementById("projectsList");
+      const projectCount = document.getElementById("projectCount");
+
+      projectCount.textContent = `${projects.length} project${projects.length !== 1 ? 's' : ''}`;
+
+      if (projects.length === 0) {
+        projectsList.innerHTML = '<p class="text-center text-white/60 py-8">No projects yet. Add one to get started!</p>';
+        return;
+      }
+
+      projectsList.innerHTML = projects.map(project => {
+        const statusColors = {
+          'Active': 'bg-emerald-500/20 text-emerald-300',
+          'Pending': 'bg-yellow-500/20 text-yellow-300',
+          'Completed': 'bg-blue-500/20 text-blue-300',
+          'On Hold': 'bg-red-500/20 text-red-300'
+        };
+
+        const statusClass = statusColors[project.status] || 'bg-white/20 text-white';
+        const deadline = new Date(project.deadline).toLocaleDateString();
+
+        return `
+          <div class="rounded-xl border border-white/10 bg-white/8 p-5 hover:bg-white/12 transition">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div class="flex-1">
+                <h4 class="font-bold text-lg text-white">${project.client_name}</h4>
+                <p class="text-sm text-white/60 mt-1">${project.project_type}</p>
+                ${project.notes ? `<p class="text-sm text-white/70 mt-2">${project.notes}</p>` : ''}
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold ${statusClass}">
+                  ${project.status}
+                </span>
+                <button onclick="deleteProject('${project.__backendId}')" class="focus-ring rounded-lg p-2 hover:bg-red-500/20 text-red-300 transition">
+                  <i data-lucide="trash-2" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+            <p class="text-xs text-white/50 mt-4">Due: ${deadline}</p>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    async function deleteProject(backendId) {
+      const project = projects.find(p => p.__backendId === backendId);
+      if (!project) return;
+
+      const result = await window.dataSdk.delete(project);
+      if (!result.isOk) {
+        alert('Failed to delete project');
+      }
+    }
+
+    document.getElementById("projectForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const clientName = document.getElementById("clientName").value.trim();
+      const projectType = document.getElementById("projectType").value.trim();
+      const status = document.getElementById("status").value.trim();
+      const deadline = document.getElementById("deadline").value;
+      const notes = document.getElementById("notes").value.trim();
+      const submitBtn = document.getElementById("submitBtn");
+
+      if (!clientName || !projectType || !deadline) {
+        alert("Please fill in all required fields");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Adding...";
+
+      const result = await window.dataSdk.create({
+        id: Date.now().toString(),
+        client_name: clientName,
+        project_type: projectType,
+        status: status,
+        deadline: deadline,
+        notes: notes,
+        created_at: new Date().toISOString()
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i data-lucide="plus" aria-hidden="true" class="inline mr-2"></i>Add Project';
+
+      if (result.isOk) {
+        document.getElementById("projectForm").reset();
+        lucide.createIcons();
+      } else {
+        alert("Failed to add project");
+      }
+    });
+
+    // Admin Modal Toggle
+    const adminToggle = document.getElementById("adminToggle");
+    const adminModal = document.getElementById("adminModal");
+    const closeAdmin = document.getElementById("closeAdmin");
+
+    adminToggle.addEventListener("click", () => {
+      adminModal.classList.remove("hidden");
+    });
+
+    closeAdmin.addEventListener("click", () => {
+      adminModal.classList.add("hidden");
+    });
+
+    adminModal.addEventListener("click", (e) => {
+      if (e.target === adminModal) {
+        adminModal.classList.add("hidden");
+      }
+    });
+
+    // Initialize
+    document.addEventListener("DOMContentLoaded", () => {
+      initializeDataSDK();
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0153c8eafdaf5c9',t:'MTc3OTcxOTQxMA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
